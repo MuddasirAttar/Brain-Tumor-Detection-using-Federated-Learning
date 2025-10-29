@@ -1,6 +1,3 @@
-Here’s a polished, drop-in **README.md** for your GitHub repository. If you want me to tailor the commands to your exact folder names or add screenshots/diagrams, I can revise it in place.
-
----
 
 # Brain Tumor Detection from MRI using Federated Learning
 
@@ -219,6 +216,4 @@ Add your preferred license (e.g., MIT) here. Make sure the dataset’s license p
 
 Thanks to the collaborators and prior work on federated learning and medical imaging referenced in the project write-up. 
 
----
 
-**Tip:** If your repo includes the PowerPoint and any notebooks, I can add a **“Reproduce the paper figures”** section with exact commands and produce a clean `Makefile` to run the full FL cycle end-to-end.

@@ -1,0 +1,54 @@
+### datagenerator to get the batch of data, It takes file list, batch size and resolution as arguments
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras import layers
+
+class BrainTumorDataset(tf.keras.utils.Sequence):
+    def __init__(self, df,
+                 batch_size,
+                 input_size=(224, 224, 3),
+                 shuffle=True, do_augmentation=False):
+        
+        self.df = df
+        self.batch_size=batch_size
+        self.input_size=input_size
+        self.do_augmentation=do_augmentation
+        if do_augmentation:  ## We need to augment only the training data here.
+            self.data_augmentation = tf.keras.Sequential([
+                layers.RandomFlip("horizontal"),
+                layers.RandomRotation(0.2),
+                ])
+
+            self.replicate_factor=12
+        else:
+            self.replicate_factor=1
+
+        self.max_index=len(self.df)//self.batch_size
+    
+    def on_epoch_end(self):
+        pass
+    
+    def load_image(self,name):
+        image= tf.keras.preprocessing.image.load_img(name)
+        image= tf.keras.preprocessing.image.img_to_array(image)
+        image= tf.image.resize(image,(self.input_size[0],self.input_size[1]))
+        if self.do_augmentation: # and np.random.rand(1)<0.2:   #0.2 propbality the augmentation happens, we don't want distort all the imagews
+            image=self.data_augmentation(image)
+        return image
+
+    def __getitem__(self, index):
+        index=index%self.max_index
+        batches = self.df[index * self.batch_size:(index + 1) * self.batch_size]
+        images=[]
+        labels=[]
+        for index, row in batches.iterrows():
+          images.append(self.load_image(row['filename']))
+          labels.append(row['labels'])
+        return np.array(images),np.array(labels)
+    
+    def __len__(self):
+        return len(self.df)*self.replicate_factor // self.batch_size
+
+
+
+
